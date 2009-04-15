@@ -73,6 +73,7 @@ describe MainPresenter do
     
   it "should exit the app when exit clicked" do
     @view.should_receive(:close).once
+
     @presenter.exit_button_mouse_released
   end
 end

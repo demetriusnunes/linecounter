@@ -14,14 +14,7 @@ class MainPresenter
     if @model.valid?
       @view.disable_buttons
       @view.enable_work_in_progress_feedback
-      begin
-        result = @model.count_lines do |file, lines, file_count, line_count|
-          @view.display_status("#{line_count} lines in #{file_count} files.\n#{lines} lines in #{File.basename(file)}")
-        end
-        @view.display_status("#{result[1]} lines in #{result[0]} file(s) counted.")
-      rescue => ex
-        @view.display_status("Error: #{ex}")
-      end
+      count_lines
       @view.enable_buttons
       @view.disable_work_in_progress_feedback
     else
@@ -44,5 +37,16 @@ class MainPresenter
       @view[:outputFile] = selected_file.getPath
     end
   end
-  
+
+  private
+
+  def count_lines
+    result = @model.count_lines do |file, lines, file_count, line_count|
+      @view.display_status("#{line_count} lines in #{file_count} files.\n#{lines} lines in #{File.basename(file)}")
+    end
+    @view.display_status("#{result[1]} lines in #{result[0]} file(s) counted.")
+  rescue => ex
+    @view.display_status("Error: #{ex}")
+  end
+
 end
