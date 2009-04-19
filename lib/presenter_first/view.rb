@@ -1,5 +1,6 @@
 include_class javax.swing.JComponent
 include_class javax.swing.KeyStroke
+
 include_class "foxtrot.Worker"
 include_class "foxtrot.Job"
 

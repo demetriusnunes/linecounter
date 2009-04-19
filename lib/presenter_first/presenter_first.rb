@@ -1,3 +1,5 @@
+require "foxtrot.jar"
+
 %w(inflector view model).each do |file|
   require File.expand_path(File.dirname(__FILE__)) + "/" + file
 end

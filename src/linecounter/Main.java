@@ -37,7 +37,7 @@ public class Main {
         RubyInstanceConfig config = new RubyInstanceConfig();
         Ruby runtime = Ruby.newInstance(config);
         runtime.getLoadService().init(new ArrayList(0));
-        runtime.evalScriptlet("require 'src/main.rb'");
+        runtime.evalScriptlet("require 'src/main.rb'; MainPresenter.new(MainModel.new, MainView.new)");
     }
 
 }
