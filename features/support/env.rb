@@ -19,7 +19,7 @@ Before do
 end
 
 After do
-  @presenter.exit_button_mouse_released
+  @presenter.exit_clicked
 end
 
 at_exit do

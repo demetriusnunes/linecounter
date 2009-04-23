@@ -7,7 +7,7 @@ Given /^I have filled all the parameters correctly$/ do
 end
 
 When /^I click the GO button$/ do
-  @presenter.go_button_mouse_released
+  @presenter.go_clicked
   sleep 1
 end
 
@@ -48,7 +48,7 @@ end
 
 When /^I click the Choose\.\.\. button for (.+)$/ do |input|
   @button = input.split(' ').join('_')
-  @presenter.send("#{@button}_button_mouse_released")
+  @presenter.send("#{@button}_clicked")
 end
 
 Then /^I should be shown a File Picker dialog$/ do

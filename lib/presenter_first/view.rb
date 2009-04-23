@@ -1,10 +1,4 @@
-include_class javax.swing.JComponent
-include_class javax.swing.KeyStroke
-
-include_class "foxtrot.Worker"
 include_class "foxtrot.Job"
-
-require "presenter_first/inflector"
 
 module PresenterFirst
   class Runner < Job
@@ -42,7 +36,7 @@ module PresenterFirst
         end
       end
     end
-    
+
     def set_fields(fields = {})
       for field, value in fields
         get_field(field).text = value.to_s
@@ -61,33 +55,6 @@ module PresenterFirst
     
     def [](field)
       get_field(field).text
-    end
-    
-    def update(model, *fields)
-      for field in fields
-        get_field(field).text = model.send(field.to_s.underscore)
-      end
-    end
-    
-    def add_listener(listener, details)
-      klass = "PresenterFirst::#{details[:type].camelize}Handler".constantize
-      handler = klass.new(listener)
-      listener.instance_eval do 
-        def handle_event(event_name, event)
-          method = "#{event.source.name.underscore}_#{event_name}".to_sym
-          begin; proc = method(method); rescue; end
-          unless proc.nil?
-            runner = ::PresenterFirst::Runner.new
-            runner.proc = proc { proc.arity == 0 ? proc.call : proc.call(event) }
-            Worker.post(runner)
-          end
-        end
-      end
-      add_handler(details[:type], handler, details[:components])
-    end
-    
-    def define_handler(action, &block)
-      define_method action, block
     end
 
     def visible?
@@ -110,17 +77,22 @@ module PresenterFirst
       @main_view_component.dispose
     end
     
-    def add_handler(type, handler, components)
-      components = ["global"] if components.nil?
-      components.each do |component|
-        if "global" == component
-          get_all_components.each do |component|
-            component.send("add#{type.to_s.capitalize}Listener".to_sym, handler)
-          end
-        else
-          get_field(component).send("add#{type.to_s.capitalize}Listener", handler)
-        end
-      end
+    def connect(target)
+      yield(Connector.new(self, target))
+    end
+    
+    def bind
+      @read = Binder.new(self)
+      @write = Binder.new(self)
+      yield(@read, @write)
+    end
+
+    def read
+      @read.execute
+    end
+    
+    def write
+      @write.execute
     end
     
     # Attempts to find a member variable in the underlying @main_view_component
@@ -133,7 +105,6 @@ module PresenterFirst
       end
     end
     
-    private
     # Uses reflection to pull a private field out of the Java objects.  In cases where
     # no Java object is being used, the view object itself is referenced.
     def get_field(field_name)

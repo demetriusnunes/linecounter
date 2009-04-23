@@ -2,13 +2,39 @@ class MainPresenter
   
   def initialize(model, view)
     @model = model; @view = view
-    @view.add_listener self, :type => :mouse, :components => %w(goButton exitButton rootPathButton outputFileButton)
-    @view.update(@model, :rootPath, :extensions, :exceptions, :commentsRegex, :outputFile)
+
+    # Connects events with presenter and methods
+    @view.connect(self) do |connect|
+      connect.go_button(:mouse, :clicked) { go_clicked }
+      connect.exit_button(:mouse, :clicked) { exit_clicked }
+      connect.root_path_button(:mouse, :clicked) { root_path_clicked }
+      connect.output_file_button(:mouse, :clicked) { output_file_clicked }
+    end
+
+    @view.bind do |read, write|
+      read.root_path { |control| control.text = @model.root_path }
+      write.root_path { |control| @model.root_path = control.text }
+      
+      read.extensions { |control| control.text = @model.extensions }
+      write.extensions { |control| @model.extensions = control.text }
+
+      read.exceptions { |control| control.text = @model.exceptions }
+      write.exceptions { |control| @model.exceptions = control.text }
+
+      read.comments_regex { |control| control.text = @model.comments_regex }
+      write.comments_regex { |control| @model.comments_regex = control.text }
+
+      read.output_file  { |control| control.text = @model.output_file }
+      write.output_file  { |control| @model.output_file = control.text }
+    end
+
+    @view.read # read from model
     @view.show
   end
   
-  def go_button_mouse_released
-    @model.update(@view, :rootPath, :extensions, :exceptions, :commentsRegex, :outputFile)
+  def go_clicked
+    @view.write # write to model
+    
     @view.clear_error_messages
     @view.clear_status
     if @model.valid?
@@ -22,17 +48,17 @@ class MainPresenter
     end
   end
 
-  def exit_button_mouse_released
+  def exit_clicked
     @view.close
   end
   
-  def root_path_button_mouse_released
+  def root_path_clicked
     if selected_file = @view.choose_root_path(@view[:rootPath])
       @view[:rootPath] = selected_file.getPath
     end
   end
   
-  def output_file_button_mouse_released
+  def output_file_clicked
     if selected_file = @view.choose_output_file(@view[:outputFile])
       @view[:outputFile] = selected_file.getPath
     end
