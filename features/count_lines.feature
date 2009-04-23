@@ -12,3 +12,13 @@ Feature: Counting lines of source code
         When I click the GO button
         Then I should have shown a error message
         And I should have nothing shown in the status area
+
+    Scenario: Using a File Picker dialog for root path
+        Given I am at the Main Screen
+        When I click the Choose... button for root path
+        Then I should be shown a File Picker dialog
+
+    Scenario: Using a File Picker dialog for choosing a output file
+        Given I am at the Main Screen
+        When I click the Choose... button for output file
+        Then I should be shown a File Picker dialog

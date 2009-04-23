@@ -41,3 +41,17 @@ Then /^I should have nothing shown in the status area$/ do
   @view.status.text.should be_empty
   @view.status.visible.should_not be_true
 end
+
+Given /^I am at the Main Screen$/ do
+  @view.should_not be_nil
+end
+
+When /^I click the Choose\.\.\. button for (.+)$/ do |input|
+  @button = input.split(' ').join('_')
+  @presenter.send("#{@button}_button_mouse_released")
+end
+
+Then /^I should be shown a File Picker dialog$/ do
+  param = @button.camelize(false).to_sym
+  @view[param].should == "some_file.dat"
+end

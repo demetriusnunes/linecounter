@@ -23,6 +23,11 @@ module PresenterFirst
       class_name = /.*?\.?(\w+)$/.match(java_class)[1]
       self.send(:class_variable_set, :@@java_class, const_get(class_name))
     end
+    
+    def self.headless
+      include PresenterFirst::HeadlessView
+      self
+    end
 
     public
     def initialize
@@ -106,7 +111,6 @@ module PresenterFirst
     end
     
     def add_handler(type, handler, components)
-      warn "Adding #{type.inspect}"
       components = ["global"] if components.nil?
       components.each do |component|
         if "global" == component
