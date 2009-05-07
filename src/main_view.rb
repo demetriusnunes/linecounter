@@ -34,18 +34,18 @@ class MainView < PresenterFirst::View
     status.text = message
   end
 
-  def choose_root_path(initial_path)
-    fc = JFileChooser.new(initial_path)
+  def choose_root_path
+    fc = JFileChooser.new(rootPath.text)
     fc.setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY)
     fc.showOpenDialog(@screen)
-    fc.getSelectedFile
+    fc.getSelectedFile.getPath rescue nil
   end
 
-  def choose_output_file(initial_path)
-    fc = JFileChooser.new(initial_path)
+  def choose_output_file
+    fc = JFileChooser.new(outputFile.text)
     fc.setFileSelectionMode(JFileChooser::FILES_AND_DIRECTORIES)
     fc.showOpenDialog(@screen)
-    fc.getSelectedFile
+    fc.getSelectedFile.getPath rescue nil
   end
 
   def enable_work_in_progress_feedback

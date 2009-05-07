@@ -11,21 +11,12 @@ class MainPresenter
       connect.output_file_button(:mouse, :clicked) { output_file_clicked }
     end
 
-    @view.bind do |read, write|
-      read.root_path { |control| control.text = @model.root_path }
-      write.root_path { |control| @model.root_path = control.text }
-      
-      read.extensions { |control| control.text = @model.extensions }
-      write.extensions { |control| @model.extensions = control.text }
-
-      read.exceptions { |control| control.text = @model.exceptions }
-      write.exceptions { |control| @model.exceptions = control.text }
-
-      read.comments_regex { |control| control.text = @model.comments_regex }
-      write.comments_regex { |control| @model.comments_regex = control.text }
-
-      read.output_file  { |control| control.text = @model.output_file }
-      write.output_file  { |control| @model.output_file = control.text }
+    @view.bind(@model) do |binder|
+      binder.simple(:root_path, :text, :root_path)
+      binder.simple(:extensions, :text, :extensions)
+      binder.simple(:exceptions, :text, :exceptions)
+      binder.simple(:comments_regex, :text, :comments_regex)
+      binder.simple(:output_file, :text, :output_file)
     end
 
     @view.read # read from model
@@ -53,14 +44,16 @@ class MainPresenter
   end
   
   def root_path_clicked
-    if selected_file = @view.choose_root_path(@view[:rootPath])
-      @view[:rootPath] = selected_file.getPath
+    if selected_path = @view.choose_root_path
+      @model.root_path = selected_path
+      @view.read(:root_path)
     end
   end
   
   def output_file_clicked
-    if selected_file = @view.choose_output_file(@view[:outputFile])
-      @view[:outputFile] = selected_file.getPath
+    if selected_file = @view.choose_output_file
+      @model.output_file = selected_file
+      @view.read(:output_file)
     end
   end
 

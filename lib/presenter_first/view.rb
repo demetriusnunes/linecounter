@@ -48,13 +48,9 @@ module PresenterFirst
         values << get_field(field).text
       }
     end
-
-    def []=(field, value)
-      get_field(field).text = value
-    end
     
     def [](field)
-      get_field(field).text
+      get_field(field)
     end
 
     def visible?
@@ -81,18 +77,17 @@ module PresenterFirst
       yield(Connector.new(self, target))
     end
     
-    def bind
-      @read = Binder.new(self)
-      @write = Binder.new(self)
-      yield(@read, @write)
+    def bind(model)
+      @binder = Binder.new(self, model)
+      yield(@binder)
     end
 
-    def read
-      @read.execute
+    def read(*fields)
+      @binder.execute(:read, *fields)
     end
     
-    def write
-      @write.execute
+    def write(*fields)
+      @binder.execute(:write, *fields)
     end
     
     # Attempts to find a member variable in the underlying @main_view_component
