@@ -34,12 +34,18 @@ The easiest way to see it in action is to open it as a NetBeans project.
 You can run from the command line like this:
     java -jar dist/LineCounter.jar
 
+Or this:
+    jruby src/main.rb
+    
 You can even run with a proper configured Ant environment like this:
     ant run
 
-Also, you can run the RSpec files in the /spec folder.
+Also, you can run the RSpec files in the /spec folder:
     spec spec/
 
+And generate coverage reports with:
+    rcov spec/*.rb
+    
 == LICENSE
 
 (The MIT License)
