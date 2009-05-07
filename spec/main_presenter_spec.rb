@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'spec'
+require 'spec/autorun'
 require File.expand_path(File.dirname(__FILE__)) + "/../src/main_presenter"
 
 describe MainPresenter do

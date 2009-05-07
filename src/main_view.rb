@@ -58,7 +58,6 @@ class MainView < PresenterFirst::View
     progressBar.setIndeterminate(false)
   end
   
-  
   def close
     dispose
   end
